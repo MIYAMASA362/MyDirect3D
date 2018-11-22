@@ -17,6 +17,7 @@
 #include"Texture.h"
 
 //Class
+#include"CTransform.h"
 
 //===============================================
 //	ƒ}ƒNƒ’è‹`		define
@@ -79,7 +80,6 @@ void Billboard_Initialize()
 
 void BillBoard_Create(D3DXVECTOR3 position)
 {
-
 	D3DXMATRIX InvView;
 	D3DXMatrixTranspose(&InvView,&Camera::Get_ViewMatrix());
 	InvView._14 = 0.0f;
@@ -102,6 +102,34 @@ void BillBoard_Create(D3DXVECTOR3 position)
 	Device->SetFVF(FVF_BILLBOARD);
 	Device->DrawPrimitive(D3DPT_TRIANGLESTRIP,0,2);
 
+}
+
+void BillBoard_Create(Transform* pTransform)
+{
+	D3DXMATRIX InvView;
+	D3DXMatrixTranspose(&InvView, &Camera::Get_ViewMatrix());
+	InvView._14 = 0.0f;
+	InvView._24 = 0.0f;
+	InvView._34 = 0.0f;
+
+	D3DXMATRIX MtxTransform;
+	D3DXMatrixTranslation(&MtxTransform,  pTransform->Position.x,pTransform->Position.y, pTransform->Position.z);
+
+	D3DXMATRIX MtxScaling;
+	D3DXMatrixScaling(&MtxScaling,pTransform->Scale.x,pTransform->Scale.y,pTransform->Scale.z);
+
+	D3DXMATRIX MtxWorld;
+	D3DXMatrixIdentity(&MtxWorld);
+	MtxWorld = InvView * MtxScaling *MtxTransform;
+
+	LPDIRECT3DDEVICE9 Device = System_GetDevice();
+	Device->SetTransform(D3DTS_WORLD, &MtxWorld);
+	Device->SetMaterial(&g_Material);
+	Device->SetTexture(0, Texture_GetTexture(BillBoardTex));
+
+	Device->SetStreamSource(0, g_pVertexBuffer, 0, sizeof(BillboardVertex));
+	Device->SetFVF(FVF_BILLBOARD);
+	Device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 }
 
 void BillBoard_Finalaize()

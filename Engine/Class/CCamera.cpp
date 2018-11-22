@@ -36,9 +36,8 @@ ACamera*  ACamera::pMainCamera = NULL;
 //-------------------------------------
 //	コンストラクタ
 //-------------------------------------
-ACamera::ACamera(D3DXVECTOR3 Position, D3DXVECTOR3 At, float AtDistance, float fov)
+ACamera::ACamera(D3DXVECTOR3 Position, D3DXVECTOR3 At, float AtDistance, float fov):transform(Position)
 {
-	this->transform.Position = Position;
 	this->at = At;
 	this->atDistance = AtDistance;
 	this->fov = fov;
@@ -123,8 +122,7 @@ Camera::Camera(D3DXVECTOR3 Position, D3DXVECTOR3 At, float AtDistance, float fov
 //-------------------------------------
 void Camera::Update()
 {
-	//this->transform.Position = this->transform.Get_Parent()->Position;
-	this->at = this->transform.forward * this->atDistance + this->transform.position;
+
 }
 
 //===============================================

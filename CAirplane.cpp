@@ -16,6 +16,7 @@
 //class
 #include"CAirplane.h"
 #include"input.h"
+#include"CBullet.h"
 
 //===============================================
 //	ƒ}ƒNƒ’è‹`		define
@@ -150,4 +151,11 @@ void CAirplane::Update()
 	{
 		this->transform.position -= this->transform.forward * 0.1f;
 	}
+
+	//’eŒ‚‚Â
+	if(Keyboard_IsTrigger(DIK_SPACE))
+	{
+		CBullet_Create(this->transform.Position,D3DXVECTOR3(0.8f,0.8f,0.8f),-this->transform.forward);
+	}
+
 }

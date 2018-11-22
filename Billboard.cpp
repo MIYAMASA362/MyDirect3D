@@ -43,10 +43,6 @@ static BillboardVertex* g_pBillboard_Vertex = NULL;
 
 static D3DMATERIAL9 g_Material = {};
 
-//===============================================
-//	ä÷êî			function
-//===============================================
-
 static BillboardVertex Billboard[4] = 
 {
 	{ { -0.5f,0.5f,0.0f  },{ 0.0f,0.0f,-1.0f },{ 0.0f,0.0f } },
@@ -55,8 +51,12 @@ static BillboardVertex Billboard[4] =
 	{ {  0.5f,-0.5f,0.0f },{ 0.0f,0.0f,-1.0f },{ 1.0f,1.0f } }
 };
 
+//===============================================
+//	ä÷êî			function
+//===============================================
+
 //-------------------------------------
-//	ä÷êîñº
+//	èâä˙âªèàóù
 //-------------------------------------
 void Billboard_Initialize()
 {
@@ -78,13 +78,25 @@ void Billboard_Initialize()
 	g_pVertexBuffer->Unlock();
 }
 
-void BillBoard_Create(D3DXVECTOR3 position)
+//-------------------------------------
+//	ãtçsóÒ
+//-------------------------------------
+inline D3DXMATRIX InvMatrix()
 {
 	D3DXMATRIX InvView;
-	D3DXMatrixTranspose(&InvView,&Camera::Get_ViewMatrix());
+	D3DXMatrixTranspose(&InvView, &Camera::Get_ViewMatrix());
 	InvView._14 = 0.0f;
 	InvView._24 = 0.0f;
 	InvView._34 = 0.0f;
+	return InvView;
+}
+
+//-------------------------------------
+//	ê∂ê¨èàóù
+//-------------------------------------
+void BillBoard_Create(D3DXVECTOR3 position)
+{
+	D3DXMATRIX InvView = InvMatrix();
 
 	D3DXMATRIX MtxTransform;
 	D3DXMatrixTranslation(&MtxTransform,position.x,position.y,position.z);
@@ -106,11 +118,7 @@ void BillBoard_Create(D3DXVECTOR3 position)
 
 void BillBoard_Create(Transform* pTransform)
 {
-	D3DXMATRIX InvView;
-	D3DXMatrixTranspose(&InvView, &Camera::Get_ViewMatrix());
-	InvView._14 = 0.0f;
-	InvView._24 = 0.0f;
-	InvView._34 = 0.0f;
+	D3DXMATRIX InvView = InvMatrix();
 
 	D3DXMATRIX MtxTransform;
 	D3DXMatrixTranslation(&MtxTransform,  pTransform->Position.x,pTransform->Position.y, pTransform->Position.z);
@@ -132,6 +140,9 @@ void BillBoard_Create(Transform* pTransform)
 	Device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 }
 
+//-------------------------------------
+//	èIóπèàóù
+//-------------------------------------
 void BillBoard_Finalaize()
 {
 	if(g_pVertexBuffer)

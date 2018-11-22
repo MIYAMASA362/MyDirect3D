@@ -17,6 +17,7 @@
 #include"common.h"
 #include<d3dx9.h>
 
+#include"CTransform.h"
 //================================================
 //	É}ÉNÉçíËã`	define
 //================================================
@@ -42,6 +43,7 @@
 //================================================
 void Billboard_Initialize();
 void BillBoard_Create(D3DXVECTOR3 position);
+void BillBoard_Create(Transform* pTransform);
 void BillBoard_Finalaize();
 
 #endif

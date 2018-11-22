@@ -14,22 +14,128 @@
 #include"CBullet.h"
 
 //class
+#include"Billboard.h"
 
 //===============================================
 //	マクロ定義		define
 //===============================================
 
-
 //===============================================
 //	グローバル変数	global
 //===============================================
-
+std::vector<CBullet*> CBullet::pIndex;
+float CBullet::Speed = 2.0f;
 
 //===============================================
-//	クラス名		class
+//	CBullet
 //===============================================
 
+//-------------------------------------
+//	コンストラクタ
+//-------------------------------------
+CBullet::CBullet(D3DXVECTOR3 Position,D3DXVECTOR3 Scale,D3DXVECTOR3 face)
+:
+	transform(Position,Scale)
+{
+	this->face = face;
+	pIndex.push_back(this);
+}
 
 //-------------------------------------
-//	メンバ関数名
+//	デストラクタ
 //-------------------------------------
+CBullet::~CBullet()
+{
+	std::vector<CBullet*>::iterator me = pIndex.begin();
+
+	while(me != pIndex.end())
+	{
+		if((*me) == this)
+		{
+			me = pIndex.erase(me);
+			break;
+		}
+		me++;
+	}
+}
+
+//-------------------------------------
+//	更新処理
+//-------------------------------------
+void CBullet::Update()
+{
+	this->transform.Position += this->face * Speed;
+	//this->transform.Position.y -= 0.2f;	//弾の落下
+	if(this->transform.Position.y <= 0.0f)
+	{
+		this->Destroy();
+	}
+}
+
+//-------------------------------------
+//	描画処理
+//-------------------------------------
+void CBullet::Render()
+{
+	BillBoard_Create(&this->transform);
+}
+
+//-------------------------------------
+//	削除
+//-------------------------------------
+void CBullet::Destroy()
+{
+	this->~CBullet();
+}
+
+//=====================================
+//	グローバル関数
+//=====================================
+
+//-------------------------------------
+//	更新
+//-------------------------------------
+void CBullet::g_Update()
+{
+	for(int i =0; i < pIndex.size(); i++)
+	{
+		pIndex.at(i)->Update();
+	}
+}
+
+//-------------------------------------
+//	描画
+//-------------------------------------
+void CBullet::g_Render()
+{
+	for (int i = 0; i < pIndex.size(); i++)
+	{
+		pIndex.at(i)->Render();
+	}
+}
+
+//===============================================
+//	関数
+//===============================================
+
+void CBullet_Create(D3DXVECTOR3 Position, D3DXVECTOR3 Scale, D3DXVECTOR3 face)
+{
+	CBullet* bullet = new CBullet(Position,Scale,face);
+}
+
+//-------------------------------------
+//	終了処理
+//-------------------------------------
+void CBullet_Finalize()	
+{
+	/*
+	//全要素を削除したい
+	std::vector<CBullet*>::iterator it = CBullet::pIndex.end();
+	while(it != CBullet::pIndex.begin())
+	{
+		delete *it;
+		it--;
+	}
+	*/
+	CBullet::pIndex.clear();
+}

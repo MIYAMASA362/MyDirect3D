@@ -14,6 +14,8 @@
 //================================================
 //	インクルード	include
 //================================================
+#include<d3dx9.h>
+#include<vector>
 #include"common.h"
 
 #include"CTransform.h"
@@ -48,15 +50,25 @@
 //-------------------------------------
 class CBullet
 {
+public:
+	static std::vector<CBullet*> pIndex;
+
+public:
+	static void g_Update();
+	static void g_Render();
+
+public:
+	static float Speed;			//弾速
+
 private:
-	float Speed;			//弾速
+	D3DXVECTOR3 face;
 
 public:
 	Transform transform;	//位置情報
 
 public:
 	//コンストラクタ
-	CBullet();
+	CBullet(D3DXVECTOR3 Position, D3DXVECTOR3 Scale, D3DXVECTOR3 face);
 
 	//デストラクタ
 	~CBullet();
@@ -65,7 +77,10 @@ public:
 	void Update();			//更新
 	void Render();			//描画
 
+	void Destroy();			//削除
 };
 
+void CBullet_Create(D3DXVECTOR3 Position, D3DXVECTOR3 Scale, D3DXVECTOR3 face);
+void CBullet_Finalize();
 
 #endif

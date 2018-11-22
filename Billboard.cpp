@@ -18,6 +18,8 @@
 
 //Class
 #include"CTransform.h"
+#include"Billboard.h"
+#include"Animation.h"
 
 //===============================================
 //	マクロ定義		define
@@ -32,6 +34,19 @@ struct BillboardVertex
 	D3DXVECTOR2 TexCoord;
 	
 };
+
+//-------------------------------------
+//	逆行列
+//-------------------------------------
+inline D3DXMATRIX InvMatrix()
+{
+	D3DXMATRIX InvView;
+	D3DXMatrixTranspose(&InvView, &Camera::Get_ViewMatrix());
+	InvView._14 = 0.0f;
+	InvView._24 = 0.0f;
+	InvView._34 = 0.0f;
+	return InvView;
+}
 
 
 //===============================================
@@ -50,6 +65,135 @@ static BillboardVertex Billboard[4] =
 	{ { -0.5f,-0.5f,0.0f },{ 0.0f,0.0f,-1.0f },{ 0.0f,1.0f } },
 	{ {  0.5f,-0.5f,0.0f },{ 0.0f,0.0f,-1.0f },{ 1.0f,1.0f } }
 };
+
+//===============================================
+//	ABillbord
+//===============================================
+
+//-------------------------------------
+//	コンストラクタ
+//-------------------------------------
+ABillboard::ABillboard(D3DXVECTOR3 Position,D3DXVECTOR3 Scale)
+{
+	
+}
+
+//-------------------------------------
+//	デストラクタ
+//-------------------------------------
+ABillboard::~ABillboard()
+{
+	
+}
+
+//===============================================
+//	CBillboard
+//===============================================
+
+//-------------------------------------
+//	コンストラクタ
+//-------------------------------------
+CBillboard::CBillboard(D3DXVECTOR3 Position,D3DXVECTOR3 Scale):ABillboard(Position,Scale)
+{
+
+}
+
+//-------------------------------------
+//	デストラクタ
+//-------------------------------------
+CBillboard::~CBillboard()
+{
+
+}
+
+//-------------------------------------
+//	更新処理
+//-------------------------------------
+void CBillboard::Update()
+{
+
+}
+
+//-------------------------------------
+//	描画処理
+//-------------------------------------
+void CBillboard::Render()
+{
+	
+}
+
+//===============================================
+//	AnimationBillboard
+//===============================================
+
+//-------------------------------------
+//	コンストラクタ
+//-------------------------------------
+AnimationBillboard::AnimationBillboard(D3DXVECTOR3 Position,D3DXVECTOR3 Scale):ABillboard(Position,Scale)
+{
+
+}
+
+//-------------------------------------
+//	デストラクタ
+//-------------------------------------
+AnimationBillboard::~AnimationBillboard()
+{
+
+}
+
+//-------------------------------------
+//	更新処理
+//-------------------------------------
+void AnimationBillboard::Update()
+{
+
+}
+
+//-------------------------------------
+//	描画処理
+//-------------------------------------
+void AnimationBillboard::Render()
+{
+	float width = (float)texture.GetWidth();
+	float height = (float)texture.GetHeight();
+
+	animation.AnimaPatern = min((Animation_GetFrame()/animation.Waitframe),animation.MaxPatern);
+
+	D3DXVECTOR2 TexCoord = { texture.TexScale.width * (animation.AnimaPatern % animation.YMaxPatern),texture.TexScale.height * (animation.AnimaPatern/animation.YMaxPatern)};
+
+	float u0 = (float)TexCoord.x / width;
+	float v0 = (float)TexCoord.y / height;
+	float u1 = u0 + (float)texture.TexScale.width / width;
+	float v1 = v0 + (float)texture.TexScale.height / height;
+
+	BillboardVertex Polygon[4];
+	memcpy(&Polygon[0],&Billboard[0],sizeof(BillboardVertex) * 4);
+	Polygon[0].TexCoord = {u0,v0};
+	Polygon[1].TexCoord = {u1,v0};
+	Polygon[2].TexCoord = {u0,v1};
+	Polygon[3].TexCoord = {u1,v1};
+
+	D3DXMATRIX InvView = InvMatrix();
+
+	D3DXMATRIX MtxTransform;
+	D3DXMatrixTranslation(&MtxTransform, Position.x, Position.y, Position.z);
+
+	D3DXMATRIX MtxScaling;
+	D3DXMatrixScaling(&MtxScaling, Scale.x, Scale.y, Scale.z);
+
+	D3DXMATRIX MtxWorld;
+	D3DXMatrixIdentity(&MtxWorld);
+	MtxWorld = InvView * MtxScaling *MtxTransform;
+
+	LPDIRECT3DDEVICE9 Device = System_GetDevice();
+	Device->SetTransform(D3DTS_WORLD, &MtxWorld);
+	Device->SetMaterial(&g_Material);
+
+	Device->SetFVF(FVF_BILLBOARD);
+	Device->SetTexture(0, Texture_GetTexture(texture.Texture_index));
+	Device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2,&Polygon,sizeof(BillboardVertex));
+}
 
 //===============================================
 //	関数			function
@@ -76,19 +220,6 @@ void Billboard_Initialize()
 	memcpy(&g_pBillboard_Vertex[0],&Billboard[0],sizeof(BillboardVertex) * 4);
 
 	g_pVertexBuffer->Unlock();
-}
-
-//-------------------------------------
-//	逆行列
-//-------------------------------------
-inline D3DXMATRIX InvMatrix()
-{
-	D3DXMATRIX InvView;
-	D3DXMatrixTranspose(&InvView, &Camera::Get_ViewMatrix());
-	InvView._14 = 0.0f;
-	InvView._24 = 0.0f;
-	InvView._34 = 0.0f;
-	return InvView;
 }
 
 //-------------------------------------

@@ -18,6 +18,9 @@
 #include<d3dx9.h>
 
 #include"CTransform.h"
+#include"CAnimation.h"
+#include"CTexture.h"
+
 //================================================
 //	マクロ定義	define
 //================================================
@@ -48,27 +51,52 @@
 class ABillboard
 {
 public:
-	ABillboard();
+	D3DXVECTOR3 Position;	//位置
+	D3DXVECTOR3 Scale;		//大きさ
+
+public:
+	//コンストラクタ
+	ABillboard(D3DXVECTOR3 Position,D3DXVECTOR3 Scale);
+	~ABillboard();
+
+public:
+	virtual void Update() = 0;
+	virtual void Render() = 0;
 };
 
 //-------------------------------------
 //	Billboard
 //-------------------------------------
-class CBillboard
+class CBillboard:public ABillboard
 {
 public:
-	Transform transform;		//情報
-
+	
 public:
 	//コンストラクタ
-	CBillboard();
+	CBillboard(D3DXVECTOR3 Position,D3DXVECTOR3 Scale);
 
 	//デストラクタ
 	~CBillboard();
 
 public:
-	void Upadte();
-	void Render();
+	void Update() override;
+	void Render() override;
+};
+
+//-------------------------------------
+//	AnimationBillboard
+//-------------------------------------
+class AnimationBillboard:public ABillboard
+{
+public:
+	Texture texture;
+	Animation animation;
+public:
+	AnimationBillboard(D3DXVECTOR3 Position,D3DXVECTOR3 Scale);
+	~AnimationBillboard();
+public:
+	void Update() override;
+	void Render() override;
 };
 
 //================================================

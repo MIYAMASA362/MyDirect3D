@@ -24,6 +24,7 @@ public:
 	int Waitframe;				//アニメーション速度
 	int Createframe;			//生成された時のフレーム
 
+public:
 	//コンストラクタ
 	Animation();
 	Animation(int MaxPatern,int YMaxPatern,int Waitframe);

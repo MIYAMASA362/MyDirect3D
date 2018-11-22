@@ -30,6 +30,7 @@ public:
 	int GetHeight();			//高さ取得
 	TEXSCALE GetTexScale();		//サイズ取得
 
+public:
 	//コンストラクタ
 	Texture():Texture(TEXTURE_NONE, { 0,0 }, { 0,0 }){};
 	Texture(int Texture_index, TEXCOORD TexCoord, TEXSCALE TexScale);

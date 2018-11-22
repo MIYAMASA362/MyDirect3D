@@ -23,6 +23,7 @@
 #include"WinSock.h"
 #include"CAirplane.h"
 #include"Grid.h"
+#include"CBullet.h"
 
 //Geometry
 #include"MeshField_Ground.h"
@@ -77,6 +78,7 @@ void Main_UpdateBegin(void)
 	Transform::ConvertReset();
 	
 	GameObject::g_Update();
+	CBullet::g_Update();
 
 	//g_Camera.transform = Airplane.transform;
 
@@ -94,11 +96,11 @@ void Main_Render(void)
 {
 	Camera::Begin();		//•`‰æŠJŽn
 	GameObject::g_Render();
+	CBullet::g_Render();
 
 	//Grid_Render();
 	MeshSkyDome_Render(D3DXVECTOR3(0.0f, 0.0f, 0.0f),MeshCylinderTex);
 	MeshField_Ground_Render(D3DXVECTOR3(0.0f,0.0f,0.0f), MeshFieldTex);
-	BillBoard_Create(D3DXVECTOR3(1.0f, 1.0f, 1.0f));
 }
 
 
@@ -119,4 +121,5 @@ void Main_Finalize(void)
 	MeshCylinder_Finalize();
 	MeshField_Ground_Finalize();
 	MeshSkyDome_Finalize();
+	CBullet_Finalize();
 }

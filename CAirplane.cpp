@@ -17,6 +17,7 @@
 #include"CAirplane.h"
 #include"input.h"
 #include"CBullet.h"
+#include"CBurst.h"
 
 //===============================================
 //	ƒ}ƒNƒ’è‹`		define
@@ -132,22 +133,37 @@ void CAirplane::Update()
 	
 	Propeller.transform.rotation.z += D3DXToRadian(50);
 
-	if (Keyboard_IsPress(DIK_1))
-	{
-		this->transform.rotation.z += D3DXToRadian(1);
-	}
-
-	if (Keyboard_IsPress(DIK_2))
+	if(Keyboard_IsPress(DIK_U))
 	{
 		this->transform.rotation.x += D3DXToRadian(1);
 	}
 
-	if (Keyboard_IsPress(DIK_3))
+	if (Keyboard_IsPress(DIK_I))
+	{
+		this->transform.rotation.x -= D3DXToRadian(1);
+	}
+
+	if(Keyboard_IsPress(DIK_Q))
+	{
+		this->transform.rotation.y -= D3DXToRadian(1);
+	}
+
+	if(Keyboard_IsPress(DIK_E))
 	{
 		this->transform.rotation.y += D3DXToRadian(1);
 	}
 
-	if (Keyboard_IsPress(DIK_U))
+	if(Keyboard_IsPress(DIK_A))
+	{
+		this->transform.rotation.z -= D3DXToRadian(1);
+	}
+
+	if(Keyboard_IsPress(DIK_D))
+	{
+		this->transform.rotation.z += D3DXToRadian(1);
+	}
+
+	if (Keyboard_IsPress(DIK_W))
 	{
 		this->transform.position -= this->transform.forward * 0.1f;
 	}
@@ -156,6 +172,7 @@ void CAirplane::Update()
 	if(Keyboard_IsTrigger(DIK_SPACE))
 	{
 		CBullet_Create(this->transform.Position,D3DXVECTOR3(0.8f,0.8f,0.8f),-this->transform.forward);
+		
 	}
 
 }

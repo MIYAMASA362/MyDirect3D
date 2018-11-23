@@ -15,6 +15,7 @@
 
 //class
 #include"Billboard.h"
+#include"CBurst.h"
 
 //===============================================
 //	ƒ}ƒNƒ’è‹`		define
@@ -37,6 +38,7 @@ CBullet::CBullet(D3DXVECTOR3 Position,D3DXVECTOR3 Scale,D3DXVECTOR3 face)
 :
 	transform(Position,Scale)
 {
+	this->CreatePosition = Position;
 	this->face = face;
 	pIndex.push_back(this);
 }
@@ -70,6 +72,13 @@ void CBullet::Update()
 	{
 		this->Destroy();
 	}
+	
+	D3DXVECTOR3 VecDis = this->CreatePosition - this->transform.Position;
+	if (D3DXVec3Length(&VecDis) >= 100)
+	{
+		this->~CBullet();
+	}
+
 }
 
 //-------------------------------------
@@ -85,6 +94,7 @@ void CBullet::Render()
 //-------------------------------------
 void CBullet::Destroy()
 {
+	Burst_Create(this->transform.Position, { 4.0f,4.0f,4.0f });
 	this->~CBullet();
 }
 

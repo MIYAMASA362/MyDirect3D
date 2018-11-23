@@ -61,6 +61,7 @@ public:
 	static float Speed;			//’e‘¬
 
 private:
+	D3DXVECTOR3 CreatePosition;
 	D3DXVECTOR3 face;
 
 public:

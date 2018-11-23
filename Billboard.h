@@ -16,6 +16,7 @@
 //================================================
 #include"common.h"
 #include<d3dx9.h>
+#include<vector>
 
 #include"CTransform.h"
 #include"CAnimation.h"
@@ -50,6 +51,11 @@
 //-------------------------------------
 class ABillboard
 {
+public:
+	static std::vector<ABillboard*> pIndex;
+	static void g_Update();
+	static void g_Render();
+
 public:
 	D3DXVECTOR3 Position;	//ˆÊ’u
 	D3DXVECTOR3 Scale;		//‘å‚«‚³
@@ -92,11 +98,12 @@ public:
 	Texture texture;
 	Animation animation;
 public:
+	AnimationBillboard() :AnimationBillboard({ 0.0f,0.0f,0.0f }, {1.0f,1.0f,1.0f}) {};
 	AnimationBillboard(D3DXVECTOR3 Position,D3DXVECTOR3 Scale);
 	~AnimationBillboard();
 public:
-	void Update() override;
-	void Render() override;
+	void Update() final;
+	void Render() final;
 };
 
 //================================================
@@ -106,5 +113,6 @@ void Billboard_Initialize();
 void BillBoard_Create(D3DXVECTOR3 position);
 void BillBoard_Create(Transform* pTransform);
 void BillBoard_Finalaize();
-
+void AnimaBillBoard_Create(D3DXVECTOR3 Position, D3DXVECTOR3 Scale, Texture* pTexture, Animation* pAnimation);
+void BillBoardShadow_Create(D3DXVECTOR3 Position, D3DXVECTOR3 Scale);
 #endif

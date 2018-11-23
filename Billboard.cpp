@@ -66,6 +66,8 @@ static BillboardVertex Billboard[4] =
 	{ {  0.5f,-0.5f,0.0f },{ 0.0f,0.0f,-1.0f },{ 1.0f,1.0f } }
 };
 
+std::vector<ABillboard*> ABillboard::pIndex;
+
 //===============================================
 //	ABillbord
 //===============================================
@@ -75,7 +77,7 @@ static BillboardVertex Billboard[4] =
 //-------------------------------------
 ABillboard::ABillboard(D3DXVECTOR3 Position,D3DXVECTOR3 Scale)
 {
-	
+	pIndex.push_back(this);
 }
 
 //-------------------------------------
@@ -83,7 +85,33 @@ ABillboard::ABillboard(D3DXVECTOR3 Position,D3DXVECTOR3 Scale)
 //-------------------------------------
 ABillboard::~ABillboard()
 {
-	
+	std::vector<ABillboard *>::iterator me = pIndex.begin();
+
+	while (me != pIndex.end())
+	{
+		if ((*me) == this)
+		{
+			me = pIndex.erase(me);
+			break;
+		}
+		me++;
+	}
+}
+
+void ABillboard::g_Update()
+{
+	for(int i = 0; i< pIndex.size(); i++)
+	{
+		pIndex.at(i)->Update();
+	}
+}
+
+void ABillboard::g_Render()
+{
+	for(int i = 0; i < pIndex.size(); i++)
+	{
+		pIndex.at(i)->Render();
+	}
 }
 
 //===============================================
@@ -139,7 +167,7 @@ AnimationBillboard::AnimationBillboard(D3DXVECTOR3 Position,D3DXVECTOR3 Scale):A
 //-------------------------------------
 AnimationBillboard::~AnimationBillboard()
 {
-
+	int i = 0;
 }
 
 //-------------------------------------
@@ -147,7 +175,10 @@ AnimationBillboard::~AnimationBillboard()
 //-------------------------------------
 void AnimationBillboard::Update()
 {
-
+	if(this->animation.AnimaPatern >= this->animation.MaxPatern)
+	{
+		//this->~AnimationBillboard();
+	}
 }
 
 //-------------------------------------
@@ -158,9 +189,10 @@ void AnimationBillboard::Render()
 	float width = (float)texture.GetWidth();
 	float height = (float)texture.GetHeight();
 
-	animation.AnimaPatern = min((Animation_GetFrame()/animation.Waitframe),animation.MaxPatern);
+	//animation.AnimaPatern = min((Animation_GetFrame()/animation.Waitframe),animation.MaxPatern);
+	animation.AnimaPatern = (Animation_GetFrame() / animation.Waitframe) % animation.MaxPatern;
 
-	D3DXVECTOR2 TexCoord = { texture.TexScale.width * (animation.AnimaPatern % animation.YMaxPatern),texture.TexScale.height * (animation.AnimaPatern/animation.YMaxPatern)};
+	D3DXVECTOR2 TexCoord = { (float)texture.TexScale.width * (animation.AnimaPatern % animation.YMaxPatern),(float)texture.TexScale.height * (animation.AnimaPatern/animation.YMaxPatern)};
 
 	float u0 = (float)TexCoord.x / width;
 	float v0 = (float)TexCoord.y / height;
@@ -269,6 +301,84 @@ void BillBoard_Create(Transform* pTransform)
 	Device->SetStreamSource(0, g_pVertexBuffer, 0, sizeof(BillboardVertex));
 	Device->SetFVF(FVF_BILLBOARD);
 	Device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+}
+
+void AnimaBillBoard_Create(D3DXVECTOR3 Position,D3DXVECTOR3 Scale,Texture* pTexture,Animation* pAnimation)
+{
+	float width = (float)Texture_GetWidth(pTexture->Texture_index);
+	float height = (float)Texture_GetHeight(pTexture->Texture_index);
+
+	//pAnimation->AnimaPatern	= min((Animation_GetFrame()/pAnimation->Waitframe),pAnimation->MaxPatern);
+	pAnimation->AnimaPatern = ((Animation_GetFrame() - pAnimation->Createframe) / pAnimation->Waitframe) % pAnimation->MaxPatern;
+
+	D3DXVECTOR2 TexCoord = { (float)pTexture->TexScale.width * (pAnimation->AnimaPatern % pAnimation->YMaxPatern),(float)pTexture->TexScale.height * (pAnimation->AnimaPatern / pAnimation->YMaxPatern) };
+
+	float u0 = (float)TexCoord.x / width;
+	float v0 = (float)TexCoord.y / height;
+	float u1 = u0 + (float)pTexture->TexScale.width / width;
+	float v1 = v0 + (float)pTexture->TexScale.height / height;
+
+	BillboardVertex Polygon[4];
+	memcpy(&Polygon[0], &Billboard[0], sizeof(BillboardVertex) * 4);
+	Polygon[0].TexCoord = { u0,v0 };
+	Polygon[1].TexCoord = { u1,v0 };
+	Polygon[2].TexCoord = { u0,v1 };
+	Polygon[3].TexCoord = { u1,v1 };
+
+	D3DXMATRIX InvView = InvMatrix();
+
+	D3DXMATRIX MtxTransform;
+	D3DXMatrixTranslation(&MtxTransform, Position.x, Position.y, Position.z);
+
+	D3DXMATRIX MtxScaling;
+	D3DXMatrixScaling(&MtxScaling, Scale.x, Scale.y, Scale.z);
+
+	D3DXMATRIX MtxWorld;
+	D3DXMatrixIdentity(&MtxWorld);
+	MtxWorld = InvView * MtxScaling *MtxTransform;
+
+	LPDIRECT3DDEVICE9 Device = System_GetDevice();
+	Device->SetTransform(D3DTS_WORLD, &MtxWorld);
+	Device->SetMaterial(&g_Material);
+
+	Device->SetFVF(FVF_BILLBOARD);
+	Device->SetTexture(0, Texture_GetTexture(pTexture->Texture_index));
+	Device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, &Polygon, sizeof(BillboardVertex));
+}
+
+void BillBoardShadow_Create(D3DXVECTOR3 Position,D3DXVECTOR3 Scale)
+{
+	D3DXMATRIX MtxRotation;
+	D3DXMatrixRotationX(&MtxRotation,D3DXToRadian(90));
+
+	D3DXMATRIX MtxTransform;
+	D3DXMatrixTranslation(&MtxTransform, Position.x, 0.001f, Position.z);
+
+	D3DXMATRIX MtxScaling;
+	D3DXMatrixScaling(&MtxScaling, Scale.x, Scale.y, Scale.z);
+
+	D3DXMATRIX MtxWorld;
+	D3DXMatrixIdentity(&MtxWorld);
+	MtxWorld = MtxScaling * MtxRotation *MtxTransform;
+
+	LPDIRECT3DDEVICE9 Device = System_GetDevice();
+
+	Device->SetRenderState(D3DRS_BLENDOP,D3DBLENDOP_REVSUBTRACT);
+	Device->SetRenderState(D3DRS_SRCBLEND,D3DBLEND_SRCALPHA);
+	Device->SetRenderState(D3DRS_DESTBLEND,D3DBLEND_ONE);
+
+	Device->SetTransform(D3DTS_WORLD, &MtxWorld);
+
+	Device->SetMaterial(&g_Material);
+	Device->SetTexture(0, Texture_GetTexture(BillBoardTex));
+
+	Device->SetStreamSource(0, g_pVertexBuffer, 0, sizeof(BillboardVertex));
+	Device->SetFVF(FVF_BILLBOARD);
+	Device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+
+	Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);	//”wŒiDSET‚ÌƒuƒŒƒ“ƒhÝ’è
+	Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 }
 
 //-------------------------------------

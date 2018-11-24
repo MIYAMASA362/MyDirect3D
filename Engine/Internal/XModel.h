@@ -76,7 +76,6 @@ namespace XModel
 		AIRPLANE_WingRU,
 		AIRPLANE_MODEL,
 		TREE,
-		TANK,
 		NAME_END,
 		MODEL_NONE
 	};
@@ -100,8 +99,7 @@ namespace XModel
 		{AIRPLANE_WingRD,"Airplane_WingRD"},
 		{AIRPLANE_WingRU,"Airplane_WingRU"},
 		{AIRPLANE_MODEL,"Airplane"},
-		{TREE,"Tree"},
-		{ TANK,"Tank" }
+		{TREE,"Tree"}
 	};
 
 	//------------------------------------

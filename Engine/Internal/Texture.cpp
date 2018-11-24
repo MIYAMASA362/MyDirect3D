@@ -40,7 +40,10 @@ static TEXTUREDATA_INDEX Texture_Index[] =
 	{CubeTexture,"Texture/tex.png"},
 	{BillBoardTex,"Texture/bullet000.png"},
 	{MeshFieldTex,"Texture/MeshGround.jpg"},
-	{MeshCylinderTex,"Texture/skytex1.jpeg"}
+	{MeshCylinderTex,"Texture/skytex1.jpeg"},
+	{Billboard_Burst,"Texture/bomb.png"},
+	{Billboard_Shadow,"Texture/shadow000.jpg"},
+	{Billboard_Wall,"Texture/KAZTDSCF8777_TP_V.jpg"}
 };
 
 #endif

@@ -25,8 +25,8 @@ void Lighting_Initialize()
 	//	描画設定
 	//------------------------------------
 	Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);				//半透明処理をON
-	Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);	//背景DSETのブレンド設定
 	Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);	//背景DSETのブレンド設定
 	Device->SetRenderState(D3DRS_ZENABLE, TRUE);						//深度を適用
 
 	//アルファテスト

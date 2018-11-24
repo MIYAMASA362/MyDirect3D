@@ -135,32 +135,30 @@ void CAirplane::Update()
 
 	if(Keyboard_IsPress(DIK_U))
 	{
-		this->transform.rotation.x += D3DXToRadian(1);
+		this->transform.rotation.x += D3DXToRadian(0.5);
 	}
 
 	if (Keyboard_IsPress(DIK_I))
 	{
-		this->transform.rotation.x -= D3DXToRadian(1);
-	}
-
-	if(Keyboard_IsPress(DIK_Q))
-	{
-		this->transform.rotation.y -= D3DXToRadian(1);
-	}
-
-	if(Keyboard_IsPress(DIK_E))
-	{
-		this->transform.rotation.y += D3DXToRadian(1);
+		this->transform.rotation.x -= D3DXToRadian(0.5);
 	}
 
 	if(Keyboard_IsPress(DIK_A))
 	{
 		this->transform.rotation.z -= D3DXToRadian(1);
+		if (this->transform.rotation.y >= -D3DXToRadian(80))
+		{
+			this->transform.rotation.y -= D3DXToRadian(1);
+		}
 	}
 
 	if(Keyboard_IsPress(DIK_D))
 	{
 		this->transform.rotation.z += D3DXToRadian(1);
+		if (this->transform.rotation.y <= D3DXToRadian(80))
+		{
+			this->transform.rotation.y += D3DXToRadian(1);
+		}
 	}
 
 	if (Keyboard_IsPress(DIK_W))

@@ -370,7 +370,7 @@ void BillBoardShadow_Create(D3DXVECTOR3 Position,D3DXVECTOR3 Scale)
 	Device->SetTransform(D3DTS_WORLD, &MtxWorld);
 
 	Device->SetMaterial(&g_Material);
-	Device->SetTexture(0, Texture_GetTexture(BillBoardTex));
+	Device->SetTexture(0, Texture_GetTexture(Billboard_Shadow));
 
 	Device->SetStreamSource(0, g_pVertexBuffer, 0, sizeof(BillboardVertex));
 	Device->SetFVF(FVF_BILLBOARD);

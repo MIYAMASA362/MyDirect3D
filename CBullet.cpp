@@ -16,6 +16,7 @@
 //class
 #include"Billboard.h"
 #include"CBurst.h"
+#include"MeshField_Cylinder.h"
 
 //===============================================
 //	ƒ}ƒNƒ’è‹`		define
@@ -74,9 +75,9 @@ void CBullet::Update()
 	}
 	
 	D3DXVECTOR3 VecDis = this->CreatePosition - this->transform.Position;
-	if (D3DXVec3Length(&VecDis) >= 100)
+	if (D3DXVec3Length(&VecDis) >= MESH_CYLINDER_RADIUS)
 	{
-		this->~CBullet();
+		this->Destroy();
 	}
 
 }

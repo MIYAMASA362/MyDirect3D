@@ -90,8 +90,7 @@ void Main_UpdateBegin(void)
 	g_Camera.Update();
 
 }
-static Texture texture(Billboard_Burst, { 0,0 }, { 128,128 });
-static Animation animation(18, 6, 4);
+
 //=============================================================
 //	ï`âÊèàóù
 //=============================================================
@@ -100,6 +99,7 @@ void Main_Render(void)
 
 	MeshSkyDome_Render(Airplane.transform.Position, MeshCylinderTex);
 	MeshField_Ground_Render(D3DXVECTOR3(0.0f, 0.0f, 0.0f), MeshFieldTex);
+	
 	BillBoardShadow_Create(Airplane.transform.Position, { 1.0f,1.0f,1.0f });
 	CBurst::g_Render();
 
@@ -107,7 +107,6 @@ void Main_Render(void)
 	GameObject::g_Render();
 	ABillboard::g_Render();
 	CBullet::g_Render();
-	
 
 	//Grid_Render();
 

@@ -1,6 +1,6 @@
 //
 //	Transform.h
-//		Author:HIROMASA IKEDA	DATE:2018/09/28
+//		Author:HIROMASA IKEDA	DATE:2018/11/22
 //===============================================
 #pragma once
 #ifndef TRANSFORM_H
@@ -10,8 +10,41 @@
 #include<vector>
 
 //===============================================
-//	Transform : 3D専用　クラス
+//	Transform クラス
 //===============================================
+
+//-------------------------------------
+//	抽象クラス
+//-------------------------------------
+class ATransform
+{
+public:
+	//コンストラクタ
+	ATransform();
+	//デストラクタ
+	~ATransform();
+};
+
+//-------------------------------------
+//	最低限なTransform
+//-------------------------------------
+class BasicTransform:public ATransform
+{
+public:
+	D3DXVECTOR3 Position;
+	D3DXVECTOR3 Scale;
+	D3DXVECTOR3 Rotation;
+
+public:
+	//コンストラクタ
+	BasicTransform();
+	//デストラクタ
+	~BasicTransform();
+};
+
+//-------------------------------------
+//	一般的なTransform
+//-------------------------------------
 class Transform
 {
 public:

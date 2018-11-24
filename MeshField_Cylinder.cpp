@@ -25,14 +25,6 @@
 //===============================================
 //	マクロ定義		define
 //===============================================
-#define MESH_CYLINDER_HEIGHT (50)	//高さ
-#define MESH_CYLINDER_RADIUS (40.0f)	//半径
-
-#define MESH_CYLINDER_GRID_WIDTH (100)	//横グリッド数
-#define MESH_CYLINDER_GRID_HEIGHT (10)	//縦グリッド数
-
-#define MESH_ANGLE ((2*M_PI)/MESH_CYLINDER_GRID_WIDTH)	//1グリッド角度
-#define MESH_HEIGHT (MESH_CYLINDER_HEIGHT / MESH_CYLINDER_GRID_HEIGHT)	//1グリッド高さ
 
 //===============================================
 //	グローバル変数	global
@@ -45,6 +37,9 @@ static WORD* g_pIndex = NULL;
 
 static D3DMATERIAL9 g_Material;
 static int VertexNum = (MESH_CYLINDER_GRID_WIDTH + 1) * (MESH_CYLINDER_GRID_HEIGHT + 1) + ((MESH_CYLINDER_GRID_HEIGHT - 1) * 2);
+
+static D3DXVECTOR3 g_Center;
+
 //===============================================
 //	関数			function
 //===============================================
@@ -136,6 +131,7 @@ void MeshCylinder_Initialize()
 
 void MeshCylinder_Render(const D3DXVECTOR3 Center,TEXTURE_NAME Texture)
 {
+	g_Center = Center;
 	LPDIRECT3DDEVICE9 Device = System_GetDevice();
 	D3DXMATRIX mtxWorld;
 	D3DXMatrixTranslation(&mtxWorld, Center.x, 0, Center.z);
@@ -146,6 +142,11 @@ void MeshCylinder_Render(const D3DXVECTOR3 Center,TEXTURE_NAME Texture)
 	Device->SetFVF(FVF_MESHFIELD);
 	Device->SetTexture(0,Texture_GetTexture(Texture));
 	Device->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,0,0, VertexNum,0,(MESH_CYLINDER_GRID_HEIGHT * MESH_CYLINDER_GRID_WIDTH + ((MESH_CYLINDER_GRID_HEIGHT -1) * 2)) * 2);
+}
+
+D3DXVECTOR3 MeshCylinder_GetCenter()
+{
+	return g_Center;
 }
 
 void MeshCylinder_Finalize()

@@ -1,6 +1,6 @@
 //
 //	Transform.cpp
-//		Author:HIROMASA IKEDA	DATA:2018/09/28
+//		Author:HIROMASA IKEDA	DATA:2018/11/22
 //===============================================
 #include<d3dx9.h>
 #include"CTransform.h"
@@ -11,7 +11,47 @@
 std::vector<Transform*> Transform::pIndex;
 
 //===============================================
-//	Transform3
+//	ATransform
+//===============================================
+
+//-------------------------------------
+//	コンストラクタ
+//-------------------------------------
+ATransform::ATransform()
+{
+
+}
+
+//-------------------------------------
+//	デストラクタ
+//-------------------------------------
+ATransform::~ATransform()
+{
+	
+}
+
+//===============================================
+//	BasicTransform
+//===============================================
+
+//-------------------------------------
+//	コンストラクタ
+//-------------------------------------
+BasicTransform::BasicTransform()
+{
+
+}
+
+//-------------------------------------
+//	デストラクタ
+//-------------------------------------
+BasicTransform::~BasicTransform()
+{
+
+}
+
+//===============================================
+//	Transform
 //===============================================
 
 //-------------------------------------
@@ -92,9 +132,18 @@ void Transform::Set_Parent(Transform* pParent)
 //-------------------------------------
 Transform* Transform::Set_UpdateTransform()
 {
-	this->Position = pParent->Position + this->position;
-	this->Scale = pParent->Scale + this->scale;
-	this->Rotation = pParent->Rotation + this->rotation;
+	if (this->pParent != NULL)
+	{
+		this->Position = pParent->Position + this->position;
+		this->Scale = pParent->Scale + this->scale;
+		this->Rotation = pParent->Rotation + this->rotation;
+	}
+	else
+	{
+		this->Position = this->position;
+		this->Rotation = this->rotation;
+		this->Scale = this->scale;
+	}
 
 	return this;
 }
@@ -113,6 +162,7 @@ Transform* Transform::Get_Parent()
 D3DXMATRIX Transform::Convert()
 {
 	this->bConverted = false;
+	this->Set_UpdateTransform();
 	if (this->bConverted) return this->MtxWorld;	//一度変換されている
 
 	//各行列
@@ -147,10 +197,6 @@ D3DXMATRIX Transform::Convert()
 	{
 		//親の行列見てくる
 		this->MtxWorld *= this->pParent->Convert();
-
-		this->Position	= pParent->Position + this->position;
-		this->Scale		= pParent->Scale	+ this->scale;
-		this->Rotation	= pParent->Rotation + this->rotation;
 	}
 
 	//変換終了	

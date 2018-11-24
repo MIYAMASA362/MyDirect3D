@@ -27,6 +27,9 @@ typedef enum TEXTURE_NAME
 	BillBoardTex,
 	MeshFieldTex,
 	MeshCylinderTex,
+	Billboard_Burst,
+	Billboard_Shadow,
+	Billboard_Wall,
 	TEXTURE_NAME_END,	//テクスチャ終わり
 	TEXTURE_NONE		//指定無い場合
 }TEXTURE_NAME;
